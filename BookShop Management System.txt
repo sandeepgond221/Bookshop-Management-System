@@ -1,0 +1,230 @@
+#include<stdio.h>
+#include<string.h>
+#include<stdlib.h>
+void pay(int,int,char[]);
+char bname[100];
+char pub[60];
+char author[30];
+int bcode;
+int price;
+int stock;
+int n=2;
+void bookdetails() {
+    FILE *fp;
+    int i;
+    fp=fopen("book.txt","w");
+    for(i=0; i<n; i++) {
+        printf("Enter book name:\n");
+        scanf("%s",bname);
+        printf("Enter publisher:\n");
+        scanf("%s",pub);
+        printf("Enter stock:\n");
+        scanf("%d",&stock);
+        printf("Enter bookcode:\n");
+        scanf("%d",&bcode);
+        printf("Enter price:");
+        scanf("%d",&price);
+        fprintf(fp,"%s %s %d %d %d\n",bname,pub,stock,bcode,price);
+        printf("Data written successfully.\n");
+    }
+    fclose(fp);
+
+}
+void displaybook() {
+    int i,d;
+    FILE *fp;
+    fp=fopen("book.txt","r");
+    for(i=0; i<n; i++) {
+        if(fp==0)
+            printf("file not open");
+        else {
+            printf("\tDETAILS OF BOOK[%d]\n",i+1);
+            if(fscanf(fp,"%s %s %d %d %d\n",bname,pub,&stock,&bcode,&price)!=EOF) 
+
+            {
+                printf("Bookname:%s\n",bname);
+                printf("Publisher name:%s\n ",pub);
+                printf("Stock:%d \n ",stock);
+                printf("Bookcode:%d\n ",bcode);
+                printf("Cost:%d\n",price);
+            }
+        }
+    }
+    fclose(fp);
+}
+void bill(char str[],int m) {
+    int i,res;
+    FILE *fp,*fr;
+    fp=fopen("book.txt","r");
+    fr=fopen("tmp.txt","a");
+    for(i=0; i<n; i++) {
+        while(fscanf(fp,"%s %s %d %d %d\n",bname,pub,&stock,&bcode,&price)!=EOF)
+        {   res=strcmp(str,bname);
+            if(res==0)
+            {
+                stock=stock-m;
+                fprintf(fr,"%s %s %d %d %d\n",bname,pub,stock,bcode,price);
+
+                pay(price,m,bname);
+            }
+            else {
+                fprintf(fr,"%s %s %d %d %d\n",bname,pub,stock,bcode,price);
+
+            }
+        }
+    }
+    fclose(fp);
+    fclose(fr);
+    fp=fopen("book.txt","w");
+    fclose(fp);
+    fp=fopen("book.txt","a");
+    fr=fopen("tmp.txt","r");
+    for(i=0; i<n; i++) {
+        while(fscanf(fr,"%s %s %d %d %d\n",bname,pub,&stock,&bcode,&price)!=EOF)
+        {
+            fprintf(fp,"%s %s %d %d %d\n",bname,pub,stock,bcode,price);
+
+        }
+    }
+    fclose(fp);
+    fclose(fr);
+    remove("tmp.txt");
+}
+void ustock(char str[],int m) {
+    int i,res;
+    FILE *fp,*fr;
+    fp=fopen("book.txt","r");
+    fr=fopen("tmp.txt","a");
+    for(i=0; i<n; i++) {
+        while(fscanf(fp,"%s %s %d %d %d\n",bname,pub,&stock,&bcode,&price)!=EOF)
+        {   res=strcmp(str,bname);
+            if(res==0)
+            {
+                stock=stock+m;
+                fprintf(fr,"%s %s %d %d %d\n",bname,pub,stock,bcode,price);
+            }
+            else {
+                fprintf(fr,"%s %s %d %d %d\n",bname,pub,stock,bcode,price);
+
+            }
+        }
+    }
+    fclose(fp);
+    fclose(fr);
+    fp=fopen("book.txt","w");
+    fclose(fp);
+    fp=fopen("book.txt","a");
+    fr=fopen("tmp.txt","r");
+    for(i=0; i<n; i++) {
+        while(fscanf(fr,"%s %s %d %d %d\n",bname,pub,&stock,&bcode,&price)!=EOF)
+        {
+            fprintf(fp,"%s %s %d %d %d\n",bname,pub,stock,bcode,price);
+
+        }
+    }
+    fclose(fp);
+    fclose(fr);
+    remove("tmp.txt");
+}
+void pay(int price,int m,char bname[]) {
+    char name[50];
+    printf("Enter your name:\n");
+    scanf("%s",name);
+    printf("Your bill:\n");
+    printf("Your name is:%s\n",name);
+    printf("Your book name is:%s\n",bname);
+    printf("Total payable amount is:%d\n",(m*price));
+    printf("\nThank you for buying.\n");
+}
+void uprice(char str[],int m) {
+    int i,res;
+    FILE *fp,*fr;
+    fp=fopen("book.txt","r");
+    fr=fopen("tmp.txt","a");
+    for(i=0; i<n; i++) {
+        while(fscanf(fp,"%s %s %d %d %d\n",bname,pub,&stock,&bcode,&price)!=EOF)
+        {   res=strcmp(str,bname);
+            if(res==0)
+            {
+                price=m;
+                fprintf(fr,"%s %s %d %d %d\n",bname,pub,stock,bcode,price);
+            }
+            else {
+                fprintf(fr,"%s %s %d %d %d\n",bname,pub,stock,bcode,price);
+
+            }
+        }
+    }
+    fclose(fp);
+    fclose(fr);
+    fp=fopen("book.txt","w");
+    fclose(fp);
+    fp=fopen("book.txt","a");
+    fr=fopen("tmp.txt","r");
+    for(i=0; i<n; i++) {
+        while(fscanf(fr,"%s %s %d %d %d\n",bname,pub,&stock,&bcode,&price)!=EOF)
+        {
+            fprintf(fp,"%s %s %d %d %d\n",bname,pub,stock,bcode,price);
+
+        }
+    }
+    fclose(fp);
+    fclose(fr);
+    remove("tmp.txt");
+}
+
+int main() {
+    int a,m;
+    char str[50];
+    printf("\t**WELCOME TO BOOK SHOP**");
+    while(1) {
+        printf("\nAdministration work.");
+        printf("\nEnter 1 for enter book details:");
+        printf("\nEnter 2 to update stock:");
+        printf("\nEnter 3 to update price:");
+        printf("\nFor customer.");
+        printf("\nEnter 4 to show book details:");
+        printf("\nEnter 5 for bill:");
+        printf("\nEnter 6 for exit:");
+        printf("\nEnter your choice:");
+        scanf("%d",&a);
+        switch(a) {
+        case 1:
+            bookdetails();
+            break;
+        case 2: {
+            printf("Enter your book:\n");
+            scanf("%s",str);
+            printf("Update stock:\n");
+            scanf("%d",&m);
+            ustock(str,m);
+            break;
+        }
+        case 3:
+        {
+            printf("Enter your book:\n");
+            scanf("%s",str);
+            printf("Enter new price:\n");
+            scanf("%d",&m);
+            uprice(str,m);
+            break;
+        }
+        case 4:
+            displaybook();
+            break;
+        case 5: {
+            printf("Enter your book:\n");
+            scanf("%s",str);
+            printf("Enter no of book you want:\n");
+            scanf("%d",&m);
+            bill(str,m);
+            break;
+        }
+        case 6: {
+            printf("Thank you for visiting.");
+            exit(0);
+        }
+        }
+    }
+    return 0;
+}
